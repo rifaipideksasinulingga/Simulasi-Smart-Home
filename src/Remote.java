@@ -10,8 +10,12 @@ public abstract class Remote {
     public abstract void turnOn();
     public abstract void turnOff();
 
-    public String info() {
-        return name + " : "+ (status ? "ON" : "OFF");
+    public boolean isOn(){
+        return status ;
+    }
+
+    public String getName(){
+        return name;
     }
 
 
