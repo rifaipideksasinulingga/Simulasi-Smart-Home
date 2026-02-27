@@ -1,4 +1,4 @@
-public class Lamp extends Remote {
+public class Lamp extends Device {
 
     public Lamp(String name) {
         super(name);

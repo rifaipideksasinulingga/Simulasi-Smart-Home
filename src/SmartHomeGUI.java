@@ -2,34 +2,44 @@ import java.awt.*;
 import javax.swing.*;
 
 public class SmartHomeGUI extends JFrame {
-
+    private Image image;
     private JComboBox<String> roomSelector;
     private JTextArea statusArea;
-    private JLabel cctvLabel;
-    
+    private CCTVPanel cctvPanel;
 
     private Room room1;
     private Room room2;
 
     public SmartHomeGUI() {
-        cctvLabel = new JLabel();
-        cctvLabel.setHorizontalAlignment(JLabel.CENTER);
-        add(cctvLabel, BorderLayout.EAST);
 
-        room1 = new Room("Ruang Tamu", "images/room1.jpg");
-        room2 = new Room("Kamar Tidur", "\"C:\\Users\\Rifai\\Downloads\\Gemini_Generated_Image_43qujw43qujw43qu (1).png\"");
+        room1 = new Room(
+                "Ruang Tamu",
+                "/images/room1_on.jpg",
+                "/images/room1_off.jpg"
+        );
 
-        setTitle("Smart Home CCTV Simulator");
-        setSize(500, 350);
+        room2 = new Room(
+                "Kamar Tidur",
+                "/src/images/Gemini_Generated_Image_43qujw43qujw43qu_(1).png",
+                "/images/room2_off.jpg"
+        );
+
+        setTitle("Smart Home CCTV Monitor");
+        setSize(1000, 500);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
-        roomSelector = new JComboBox<>(new String[]{"Ruang Tamu", "Kamar Tidur"});
+        roomSelector = new JComboBox<>(new String[]{
+                "Ruang Tamu", "Kamar Tidur"
+        });
         add(roomSelector, BorderLayout.NORTH);
 
         statusArea = new JTextArea();
         statusArea.setEditable(false);
         add(new JScrollPane(statusArea), BorderLayout.CENTER);
+
+        cctvPanel = new CCTVPanel(room1.getCurrentImage());
+        add(cctvPanel, BorderLayout.EAST);
 
         JPanel panel = new JPanel();
 
@@ -49,21 +59,24 @@ public class SmartHomeGUI extends JFrame {
             Room r = getSelectedRoom();
             if (r.getLamp().isOn()) r.getLamp().turnOff();
             else r.getLamp().turnOn();
+            updateDisplay();
         });
 
         acBtn.addActionListener(e -> {
             Room r = getSelectedRoom();
             if (r.getAC().isOn()) r.getAC().turnOff();
             else r.getAC().turnOn();
+            updateDisplay();
         });
 
         doorBtn.addActionListener(e -> {
             Room r = getSelectedRoom();
             if (r.getDoor().isOn()) r.getDoor().unlock();
             else r.getDoor().lock();
+            updateDisplay();
         });
 
-        statusBtn.addActionListener(e -> showStatus());
+        statusBtn.addActionListener(e -> updateDisplay());
 
         setVisible(true);
     }
@@ -72,21 +85,19 @@ public class SmartHomeGUI extends JFrame {
         return roomSelector.getSelectedIndex() == 0 ? room1 : room2;
     }
 
-    private void showStatus() {
-    Room r = getSelectedRoom();
+    private void updateDisplay() {
+        Room r = getSelectedRoom();
 
-    String info =
-            "Ruangan: " + r.getName() + "\n" +
-            "Lampu: " + (r.getLamp().isOn() ? "ON" : "OFF") + "\n" +
-            "AC: " + (r.getAC().isOn() ? "ON" : "OFF") + "\n" +
-            "Pintu: " + r.getDoor().getState();
+        String info =
+                "Ruangan: " + r.getName() + "\n" +
+                "Lampu: " + (r.getLamp().isOn() ? "ON" : "OFF") + "\n" +
+                "AC: " + (r.getAC().isOn() ? "ON" : "OFF") + "\n" +
+                "Pintu: " + r.getDoor().getState();
 
-    statusArea.setText(info);
+        statusArea.setText(info);
 
-    // tampilkan gambar CCTV
-    cctvLabel.setIcon(r.getCCTV().getImage());
-}
-
+        cctvPanel.setImage(r.getCurrentImage());
+    }
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(SmartHomeGUI::new);

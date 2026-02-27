@@ -1,8 +1,9 @@
-public abstract class Remote {
+public abstract class Device {
+
     protected String name;
     protected boolean status;
 
-    public Remote(String name) {
+    public Device(String name) {
         this.name = name;
         this.status = false;
     }
@@ -10,13 +11,7 @@ public abstract class Remote {
     public abstract void turnOn();
     public abstract void turnOff();
 
-    public boolean isOn(){
-        return status ;
+    public boolean isOn() {
+        return status;
     }
-
-    public String getName(){
-        return name;
-    }
-
-
 }

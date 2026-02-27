@@ -1,4 +1,4 @@
-public class AC extends Remote {
+public class AC extends Device {
 
     public AC(String name) {
         super(name);
@@ -13,5 +13,4 @@ public class AC extends Remote {
     public void turnOff() {
         status = false;
     }
-
 }
