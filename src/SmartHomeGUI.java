@@ -14,14 +14,14 @@ public class SmartHomeGUI extends JFrame {
 
         room1 = new Room(
                 "Ruang Tamu",
-                "/images/room1_on.jpg",
-                "/images/room1_off.jpg"
+                "/images/LR_LampOn_DoorCl.png",
+                "/images/LR_LampOff_DoorCl.png"
         );
 
         room2 = new Room(
                 "Kamar Tidur",
-                "/src/images/Gemini_Generated_Image_43qujw43qujw43qu_(1).png",
-                "/images/room2_off.jpg"
+                "/images/Gemini_Generated_Image_43qujw43qujw43qu.png",
+                "/images/Gemini_Generated_Image_43qujw43qujw43qu (1).png"
         );
 
         setTitle("Smart Home CCTV Monitor");
@@ -57,6 +57,7 @@ public class SmartHomeGUI extends JFrame {
 
         add(panel, BorderLayout.SOUTH);
 
+        // ActionListener tetap sama, updateDisplay akan memicu pembaruan gambar
         lampBtn.addActionListener(e -> {
             Room r = getSelectedRoom();
             if (r.getLamp().isOn()) r.getLamp().turnOff();
@@ -117,6 +118,7 @@ public class SmartHomeGUI extends JFrame {
 
         statusArea.setText(info);
 
+        // Ini akan memanggil loadImage() di CCTVPanel berdasarkan status lampu
         cctvPanel.setImage(r.getCurrentImage());
     }
 
