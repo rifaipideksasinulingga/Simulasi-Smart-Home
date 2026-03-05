@@ -46,11 +46,13 @@ public class SmartHomeGUI extends JFrame {
         JButton lampBtn = new JButton("Toggle Lamp");
         JButton acBtn = new JButton("Toggle AC");
         JButton doorBtn = new JButton("Lock/Unlock Door");
+        JButton tempBtn = new JButton("Set Temperature");
         JButton statusBtn = new JButton("Show Status");
 
         panel.add(lampBtn);
         panel.add(acBtn);
         panel.add(doorBtn);
+        panel.add(tempBtn);
         panel.add(statusBtn);
 
         add(panel, BorderLayout.SOUTH);
@@ -76,6 +78,24 @@ public class SmartHomeGUI extends JFrame {
             updateDisplay();
         });
 
+        tempBtn.addActionListener(e -> {
+            Room r = getSelectedRoom();
+            if (!r.getAC().isOn()) {
+                JOptionPane.showMessageDialog(this, "Turn on the AC before setting temperature.", "Info", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                String input = JOptionPane.showInputDialog(this, "Enter temperature (16-30 °C):", r.getAC().getTemperature());
+                if (input != null) {
+                    try {
+                        int temp = Integer.parseInt(input.trim());
+                        r.getAC().setTemperature(temp);
+                        updateDisplay();
+                    } catch (NumberFormatException ex) {
+                        JOptionPane.showMessageDialog(this, "Invalid temperature value.", "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+            }
+        });
+
         statusBtn.addActionListener(e -> updateDisplay());
 
         setVisible(true);
@@ -92,6 +112,7 @@ public class SmartHomeGUI extends JFrame {
                 "Ruangan: " + r.getName() + "\n" +
                 "Lampu: " + (r.getLamp().isOn() ? "ON" : "OFF") + "\n" +
                 "AC: " + (r.getAC().isOn() ? "ON" : "OFF") + "\n" +
+                "Suhu: " + r.getAC().getTemperature() + "°C\n" +
                 "Pintu: " + r.getDoor().getState();
 
         statusArea.setText(info);
