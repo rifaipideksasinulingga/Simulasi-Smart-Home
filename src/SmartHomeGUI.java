@@ -47,17 +47,19 @@ public class SmartHomeGUI extends JFrame {
         JButton acBtn = new JButton("Toggle AC");
         JButton doorBtn = new JButton("Lock/Unlock Door");
         JButton tempBtn = new JButton("Set Temperature");
-        JButton statusBtn = new JButton("Show Status");
+        
+        // Tombol Show Status dihapus dari sini
 
         panel.add(lampBtn);
         panel.add(acBtn);
         panel.add(doorBtn);
         panel.add(tempBtn);
-        panel.add(statusBtn);
 
         add(panel, BorderLayout.SOUTH);
 
-        // ActionListener tetap sama, updateDisplay akan memicu pembaruan gambar
+        // Tambahkan listener untuk roomSelector agar langsung update saat ruangan diganti
+        roomSelector.addActionListener(e -> updateDisplay());
+
         lampBtn.addActionListener(e -> {
             Room r = getSelectedRoom();
             if (r.getLamp().isOn()) r.getLamp().turnOff();
@@ -97,7 +99,8 @@ public class SmartHomeGUI extends JFrame {
             }
         });
 
-        statusBtn.addActionListener(e -> updateDisplay());
+        // Panggil updateDisplay() sekali di awal agar teks UI tidak kosong saat pertama kali dibuka
+        updateDisplay();
 
         setVisible(true);
     }
@@ -118,7 +121,6 @@ public class SmartHomeGUI extends JFrame {
 
         statusArea.setText(info);
 
-        // Ini akan memanggil loadImage() di CCTVPanel berdasarkan status lampu
         cctvPanel.setImage(r.getCurrentImage());
     }
 
