@@ -50,8 +50,8 @@ public class SmartHomeGUI extends JFrame {
 
         JPanel panel = new JPanel();
 
-        JButton lampBtn = new JButton("Toggle Lamp");
-        JButton acBtn = new JButton("Toggle AC");
+        JButton lampBtn = new JButton("ON/OFF Lamp");
+        JButton acBtn = new JButton("ON/OFF AC");
         JButton doorBtn = new JButton("Lock/Unlock Door");
         JButton tempBtn = new JButton("Set Temperature");
         
