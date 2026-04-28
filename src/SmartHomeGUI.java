@@ -9,6 +9,7 @@ public class SmartHomeGUI extends JFrame {
 
     private Room room1;
     private Room room2;
+    private Room room3;
 
     public SmartHomeGUI() {
 
@@ -24,13 +25,19 @@ public class SmartHomeGUI extends JFrame {
                 "/images/Gemini_Generated_Image_43qujw43qujw43qu (1).png"
         );
 
+        room3 = new Room(
+                "Dapur",
+                "/images/K_LampOn.png",
+                "/images/K_LampOff.png"
+        );
+
         setTitle("Smart Home CCTV Monitor");
         setSize(1000, 500);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
         roomSelector = new JComboBox<>(new String[]{
-                "Ruang Tamu", "Kamar Tidur"
+                "Ruang Tamu", "Kamar Tidur", "Dapur"
         });
         add(roomSelector, BorderLayout.NORTH);
 
@@ -106,7 +113,26 @@ public class SmartHomeGUI extends JFrame {
     }
 
     private Room getSelectedRoom() {
-        return roomSelector.getSelectedIndex() == 0 ? room1 : room2;
+        // if (roomSelector.getSelectedIndex() == room1){
+        //     return room1;
+        // } else if (roomSelector.getSelectedIndex() == room2){
+        //     return room2;
+        // } else if (roomSelector.getSelectedIndex() == room3){
+        //     return room3;
+        // } else {
+        //     return room1;
+        // }
+        int index = roomSelector.getSelectedIndex();
+        switch (index) {
+            case 0:
+                return room1;
+            case 1:
+                return room2;
+            case 2:
+                return room3;
+            default:
+                return room1;
+        }
     }
 
     private void updateDisplay() {
