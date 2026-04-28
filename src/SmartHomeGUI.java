@@ -44,6 +44,7 @@ public class SmartHomeGUI extends JFrame {
 
         statusArea = new JTextArea();
         statusArea.setEditable(false);
+        statusArea.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         add(new JScrollPane(statusArea), BorderLayout.CENTER);
 
         cctvPanel = new CCTVPanel(room1.getCurrentImage());
