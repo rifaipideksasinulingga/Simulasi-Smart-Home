@@ -6,6 +6,7 @@ public class SmartHomeGUI extends JFrame {
     private JComboBox<String> roomSelector;
     private JTextArea statusArea;
     private CCTVPanel cctvPanel;
+    private JButton lampBtn, acBtn, doorBtn, tempBtn;
 
     private Room room1;
     private Room room2;
@@ -50,10 +51,10 @@ public class SmartHomeGUI extends JFrame {
 
         JPanel panel = new JPanel();
 
-        JButton lampBtn = new JButton("ON/OFF Lamp");
-        JButton acBtn = new JButton("ON/OFF AC");
-        JButton doorBtn = new JButton("Lock/Unlock Door");
-        JButton tempBtn = new JButton("Set Temperature");
+        lampBtn = new JButton("ON/OFF Lamp");
+        acBtn = new JButton("ON/OFF AC");
+        doorBtn = new JButton("Lock/Unlock Door");
+        tempBtn = new JButton("Set Temperature");
         
         // Tombol Show Status dihapus dari sini
 
@@ -128,16 +129,23 @@ public class SmartHomeGUI extends JFrame {
 
     private void updateDisplay() {
         Room r = getSelectedRoom();
-        
+        boolean isDapur = r.getName().equals("Dapur");
 
         String info =
                 "Ruangan: " + r.getName() + "\n" +
-                "Lampu: " + (r.getLamp().isOn() ? "ON" : "OFF") + "\n" +
-                "AC: " + (r.getAC().isOn() ? "ON" : "OFF") + "\n" +
+                "Lampu: " + (r.getLamp().isOn() ? "ON" : "OFF") + "\n";
+
+        if (!isDapur) {
+        info += "AC: " + (r.getAC().isOn() ? "ON" : "OFF") + "\n" +
                 "Suhu: " + r.getAC().getTemperature() + "°C\n" +
                 "Pintu: " + r.getDoor().getState();
+        }
 
         statusArea.setText(info);
+
+        acBtn.setVisible(!isDapur);
+        doorBtn.setVisible(!isDapur);
+        tempBtn.setVisible(!isDapur);
 
         cctvPanel.setImage(r.getCurrentImage());
     }
