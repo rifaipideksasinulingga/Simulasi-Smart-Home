@@ -113,15 +113,6 @@ public class SmartHomeGUI extends JFrame {
     }
 
     private Room getSelectedRoom() {
-        // if (roomSelector.getSelectedIndex() == room1){
-        //     return room1;
-        // } else if (roomSelector.getSelectedIndex() == room2){
-        //     return room2;
-        // } else if (roomSelector.getSelectedIndex() == room3){
-        //     return room3;
-        // } else {
-        //     return room1;
-        // }
         int index = roomSelector.getSelectedIndex();
         switch (index) {
             case 0:
@@ -137,6 +128,7 @@ public class SmartHomeGUI extends JFrame {
 
     private void updateDisplay() {
         Room r = getSelectedRoom();
+        
 
         String info =
                 "Ruangan: " + r.getName() + "\n" +
