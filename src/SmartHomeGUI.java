@@ -6,6 +6,9 @@ public class SmartHomeGUI extends JFrame {
     private JComboBox<String> roomSelector;
     private JTextArea statusArea;
     private CCTVPanel cctvPanel;
+    private JButton lampBtn, acBtn, doorBtn;
+    private JSlider tempSlider;
+    private JPanel sliderPanel;
 
     private Room room1;
     private Room room2;
@@ -63,28 +66,63 @@ public class SmartHomeGUI extends JFrame {
         headerPanel.add(roomSelector);
         add(headerPanel, BorderLayout.NORTH);
 
-        statusArea = new JTextArea();
-        statusArea.setEditable(false);
-        add(new JScrollPane(statusArea), BorderLayout.CENTER);
-
+        // --- Panel Tengah (Monitor CCTV) ---
         cctvPanel = new CCTVPanel(room1.getCurrentImage());
-        add(cctvPanel, BorderLayout.EAST);
+        cctvPanel.setBorder(BorderFactory.createTitledBorder(
+                BorderFactory.createLineBorder(Color.GRAY, 1),
+                " Live Camera Feed ",
+                TitledBorder.CENTER,
+                TitledBorder.TOP,
+                new Font("SansSerif", Font.BOLD, 14),
+                Color.DARK_GRAY
+        ));
+        add(cctvPanel, BorderLayout.CENTER);
 
-        JPanel panel = new JPanel();
-
-        JButton lampBtn = new JButton("ON/OFF Lamp");
-        JButton acBtn = new JButton("ON/OFF AC");
-        JButton doorBtn = new JButton("Lock/Unlock Door");
-        JButton tempBtn = new JButton("Set Temperature");
+        // --- Panel Kanan (Status Ruangan) ---
+        JPanel statusContainer = new JPanel(new BorderLayout());
+        statusContainer.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 10));
+        statusContainer.setOpaque(false);
         
-        // Tombol Show Status dihapus dari sini
+        statusArea = new JTextArea(12, 22);
+        statusArea.setEditable(false);
+        // Desain ala monitor digital
+        statusArea.setFont(new Font("Monospaced", Font.BOLD, 15));
+        statusArea.setBackground(new Color(30, 30, 30));
+        statusArea.setForeground(new Color(0, 255, 0));
+        statusArea.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+        
+        JScrollPane scrollPane = new JScrollPane(statusArea);
+        scrollPane.setBorder(BorderFactory.createTitledBorder(
+                null, " Informasi Status ", TitledBorder.LEFT, TitledBorder.TOP, 
+                new Font("SansSerif", Font.BOLD, 14)
+        ));
+        statusContainer.add(scrollPane, BorderLayout.CENTER);
+        add(statusContainer, BorderLayout.EAST);
 
-        panel.add(lampBtn);
-        panel.add(acBtn);
-        panel.add(doorBtn);
-        panel.add(tempBtn);
+        // --- Panel Bawah (Kontrol Perangkat) ---
+        JPanel controlPanel = new JPanel(new GridBagLayout());
+        controlPanel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createEmptyBorder(10, 10, 20, 10),
+                BorderFactory.createTitledBorder(null, " Panel Kontrol Perangkat ", TitledBorder.LEFT, TitledBorder.TOP, new Font("SansSerif", Font.BOLD, 14))
+        ));
+        
+        lampBtn = createStyledButton("💡 ON/OFF Lampu", new Color(46, 204, 113));
+        doorBtn = createStyledButton("🚪 Lock/Unlock Pintu", new Color(231, 76, 60));
+        acBtn = createStyledButton("❄️ ON/OFF AC", new Color(52, 152, 219));
 
-        add(panel, BorderLayout.SOUTH);
+        // Konfigurasi Slider Suhu (Sebagai pengganti tombol Set Temp)
+        tempSlider = new JSlider(JSlider.HORIZONTAL, 16, 30, 24);
+        tempSlider.setMajorTickSpacing(2);
+        tempSlider.setMinorTickSpacing(1);
+        tempSlider.setPaintTicks(true);
+        tempSlider.setPaintLabels(true);
+        tempSlider.setFont(new Font("SansSerif", Font.PLAIN, 12));
+        
+        sliderPanel = new JPanel(new BorderLayout());
+        JLabel sliderLabel = new JLabel("Pengatur Suhu AC (°C):", SwingConstants.CENTER);
+        sliderLabel.setFont(new Font("SansSerif", Font.BOLD, 12));
+        sliderPanel.add(sliderLabel, BorderLayout.NORTH);
+        sliderPanel.add(tempSlider, BorderLayout.CENTER);
 
         // Mengatur Layout Tombol-tombol di Bawah
         GridBagConstraints gbc = new GridBagConstraints();
@@ -151,6 +189,7 @@ public class SmartHomeGUI extends JFrame {
     private JButton createStyledButton(String text, Color color) {
         JButton btn = new JButton(text);
         btn.setBackground(color);
+        btn.setForeground(Color.WHITE);
         btn.setFont(new Font("SansSerif", Font.BOLD, 13));
         btn.setFocusPainted(false);
         btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -185,17 +224,25 @@ public class SmartHomeGUI extends JFrame {
 
     private void updateDisplay() {
         Room r = getSelectedRoom();
-        
+        boolean isDapur = r.getName().equals("Dapur");
 
-        String info =
-                "Ruangan: " + r.getName() + "\n" +
-                "Lampu: " + (r.getLamp().isOn() ? "ON" : "OFF") + "\n" +
-                "AC: " + (r.getAC().isOn() ? "ON" : "OFF") + "\n" +
-                "Suhu: " + r.getAC().getTemperature() + "°C\n" +
-                "Pintu: " + r.getDoor().getState();
+        updateStatusText(r, isDapur);
 
-        statusArea.setText(info);
+        // Mengatur ketersediaan tombol sesuai ruangan (Dapur tidak ada AC dan Pintu di simulasi ini)
+        acBtn.setVisible(!isDapur);
+        doorBtn.setVisible(!isDapur);
+        sliderPanel.setVisible(!isDapur);
 
+        // Set state slider secara diam-diam tanpa men-trigger ChangeListener
+        isUpdatingUI = true;
+        if (!isDapur) {
+            tempSlider.setValue(r.getAC().getTemperature());
+            // Jika AC mati, slider tidak bisa digeser (Disabled)
+            tempSlider.setEnabled(r.getAC().isOn());
+        }
+        isUpdatingUI = false;
+
+        // Update gambar panel CCTV
         cctvPanel.setImage(r.getCurrentImage());
     }
 
