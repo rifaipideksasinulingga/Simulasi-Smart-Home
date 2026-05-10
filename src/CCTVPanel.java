@@ -8,6 +8,10 @@ public class CCTVPanel extends JPanel {
 
     private BufferedImage image;
     private String imagePath;
+    private float alpha =1f;
+    private boolean fading = false;
+    private Timer fadeTime;
+    private String nextImagePath;
 
     public CCTVPanel(String imagePath) {
         this.imagePath = imagePath;
@@ -31,10 +35,38 @@ public class CCTVPanel extends JPanel {
         }
     }
 
+    // edit sedikit, tambah animasi fade
     public void setImage(String path) {
-        this.imagePath = path;
-        loadImage();
-        repaint();
+        if(path.equals(imagePath))
+            return;
+
+        nextImagePath = path;
+        fading = true;
+        
+        if(fadeTime != null&&fadeTime.isRunning()){
+            fadeTime.stop();
+        }
+
+        fadeTime = new Timer(40, e ->{
+            if(fading){
+                alpha -= 0.12f;
+
+                if (alpha<= 0f){
+                    alpha = 0f;
+                    imagePath = nextImagePath;
+                    loadImage();
+                    fading = false;
+                }
+            } else {
+                alpha += 0.12f;
+                if(alpha>= 1f){
+                    alpha = 1f;
+                    fadeTime.stop();
+                }
+            }
+            repaint();
+        });
+        fadeTime.start();
     }
 
     @Override
@@ -48,10 +80,19 @@ public class CCTVPanel extends JPanel {
         g2.fillRect(0, 0, getWidth(), getHeight());
 
         if (image != null) {
+            g2.setComposite(
+                    AlphaComposite.getInstance(
+                        AlphaComposite.SRC_OVER,
+                        alpha));
+
             g2.drawImage(image, 20, 20,
                     getWidth() - 40,
                     getHeight() - 40,
                     null);
+
+            g2.setComposite(AlphaComposite.getInstance(
+                AlphaComposite.SRC_OVER, 
+                1f));
         }
 
         // REC
