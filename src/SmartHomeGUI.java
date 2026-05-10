@@ -28,20 +28,17 @@ public class SmartHomeGUI extends JFrame {
         room1 = new Room(
                 "Ruang Tamu",
                 "/images/LR_LampOn_DoorCl.png",
-                "/images/LR_LampOff_DoorCl.png"
-        );
+                "/images/LR_LampOff_DoorCl.png");
 
         room2 = new Room(
                 "Kamar Tidur",
                 "/images/Gemini_Generated_Image_43qujw43qujw43qu.png",
-                "/images/Gemini_Generated_Image_43qujw43qujw43qu (1).png"
-        );
+                "/images/Gemini_Generated_Image_43qujw43qujw43qu (1).png");
 
         room3 = new Room(
                 "Dapur",
                 "/images/K_LampOn.png",
-                "/images/K_LampOff.png"
-        );
+                "/images/K_LampOff.png");
 
         setTitle("Smart Home CCTV Monitor");
         setSize(1050, 550); // Ukuran sedikit dilebarkan
@@ -52,16 +49,16 @@ public class SmartHomeGUI extends JFrame {
         // --- Panel Atas (Pemilihan Ruangan) ---
         JPanel headerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 15));
         headerPanel.setBackground(new Color(44, 62, 80));
-        
+
         JLabel titleLabel = new JLabel("Pilih Ruangan: ");
         titleLabel.setForeground(Color.WHITE);
         titleLabel.setFont(new Font("SansSerif", Font.BOLD, 16));
-        
-        roomSelector = new JComboBox<>(new String[]{
+
+        roomSelector = new JComboBox<>(new String[] {
                 "Ruang Tamu", "Kamar Tidur", "Dapur"
         });
         roomSelector.setFont(new Font("SansSerif", Font.PLAIN, 14));
-        
+
         headerPanel.add(titleLabel);
         headerPanel.add(roomSelector);
         add(headerPanel, BorderLayout.NORTH);
@@ -74,15 +71,14 @@ public class SmartHomeGUI extends JFrame {
                 TitledBorder.CENTER,
                 TitledBorder.TOP,
                 new Font("SansSerif", Font.BOLD, 14),
-                Color.DARK_GRAY
-        ));
+                Color.DARK_GRAY));
         add(cctvPanel, BorderLayout.CENTER);
 
         // --- Panel Kanan (Status Ruangan) ---
         JPanel statusContainer = new JPanel(new BorderLayout());
         statusContainer.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 10));
         statusContainer.setOpaque(false);
-        
+
         statusArea = new JTextArea(12, 22);
         statusArea.setEditable(false);
         // Desain ala monitor digital
@@ -90,12 +86,11 @@ public class SmartHomeGUI extends JFrame {
         statusArea.setBackground(new Color(30, 30, 30));
         statusArea.setForeground(new Color(0, 255, 0));
         statusArea.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
-        
+
         JScrollPane scrollPane = new JScrollPane(statusArea);
         scrollPane.setBorder(BorderFactory.createTitledBorder(
-                null, " Informasi Status ", TitledBorder.LEFT, TitledBorder.TOP, 
-                new Font("SansSerif", Font.BOLD, 14)
-        ));
+                null, " Informasi Status ", TitledBorder.LEFT, TitledBorder.TOP,
+                new Font("SansSerif", Font.BOLD, 14)));
         statusContainer.add(scrollPane, BorderLayout.CENTER);
         add(statusContainer, BorderLayout.EAST);
 
@@ -103,9 +98,9 @@ public class SmartHomeGUI extends JFrame {
         JPanel controlPanel = new JPanel(new GridBagLayout());
         controlPanel.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createEmptyBorder(10, 10, 20, 10),
-                BorderFactory.createTitledBorder(null, " Panel Kontrol Perangkat ", TitledBorder.LEFT, TitledBorder.TOP, new Font("SansSerif", Font.BOLD, 14))
-        ));
-        
+                BorderFactory.createTitledBorder(null, " Panel Kontrol Perangkat ", TitledBorder.LEFT, TitledBorder.TOP,
+                        new Font("SansSerif", Font.BOLD, 14))));
+
         lampBtn = createStyledButton("💡 ON/OFF Lampu", new Color(46, 204, 113));
         doorBtn = createStyledButton("🚪 Lock/Unlock Pintu", new Color(231, 76, 60));
         acBtn = createStyledButton("❄️ ON/OFF AC", new Color(52, 152, 219));
@@ -117,7 +112,7 @@ public class SmartHomeGUI extends JFrame {
         tempSlider.setPaintTicks(true);
         tempSlider.setPaintLabels(true);
         tempSlider.setFont(new Font("SansSerif", Font.PLAIN, 12));
-        
+
         sliderPanel = new JPanel(new BorderLayout());
         JLabel sliderLabel = new JLabel("Pengatur Suhu AC (°C):", SwingConstants.CENTER);
         sliderLabel.setFont(new Font("SansSerif", Font.BOLD, 12));
@@ -130,16 +125,18 @@ public class SmartHomeGUI extends JFrame {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 1.0;
 
-        gbc.gridx = 0; gbc.gridy = 0;
+        gbc.gridx = 0;
+        gbc.gridy = 0;
         controlPanel.add(lampBtn, gbc);
-        
+
         gbc.gridx = 1;
         controlPanel.add(doorBtn, gbc);
 
         gbc.gridx = 2;
         controlPanel.add(acBtn, gbc);
 
-        gbc.gridx = 3; gbc.weightx = 2.0; // Slider diberikan ruang lebih besar
+        gbc.gridx = 3;
+        gbc.weightx = 2.0; // Slider diberikan ruang lebih besar
         controlPanel.add(sliderPanel, gbc);
 
         add(controlPanel, BorderLayout.SOUTH);
@@ -149,29 +146,36 @@ public class SmartHomeGUI extends JFrame {
 
         lampBtn.addActionListener(e -> {
             Room r = getSelectedRoom();
-            if (r.getLamp().isOn()) r.getLamp().turnOff();
-            else r.getLamp().turnOn();
+            if (r.getLamp().isOn())
+                r.getLamp().turnOff();
+            else
+                r.getLamp().turnOn();
             updateDisplay();
         });
 
         acBtn.addActionListener(e -> {
             Room r = getSelectedRoom();
-            if (r.getAC().isOn()) r.getAC().turnOff();
-            else r.getAC().turnOn();
+            if (r.getAC().isOn())
+                r.getAC().turnOff();
+            else
+                r.getAC().turnOn();
             updateDisplay();
         });
 
         doorBtn.addActionListener(e -> {
             Room r = getSelectedRoom();
-            if (r.getDoor().isOn()) r.getDoor().unlock();
-            else r.getDoor().lock();
+            if (r.getDoor().isOn())
+                r.getDoor().unlock();
+            else
+                r.getDoor().lock();
             updateDisplay();
         });
 
         // Event listener untuk Slider layaknya volume
         tempSlider.addChangeListener(e -> {
-            if (isUpdatingUI) return; // Mencegah looping event saat mengganti ruangan
-            
+            if (isUpdatingUI)
+                return; // Mencegah looping event saat mengganti ruangan
+
             Room r = getSelectedRoom();
             if (r.getAC().isOn()) {
                 r.getAC().setTemperature(tempSlider.getValue());
@@ -187,30 +191,50 @@ public class SmartHomeGUI extends JFrame {
 
     // Fungsi bantuan untuk mempercantik UI Tombol
     private JButton createStyledButton(String text, Color color) {
-        JButton btn = new JButton(text);
+        JButton btn = new ButtonBulat(text);
         btn.setBackground(color);
         btn.setForeground(Color.WHITE);
         btn.setFont(new Font("SansSerif", Font.BOLD, 13));
+        btn.setHorizontalAlignment(SwingConstants.CENTER);
+        btn.setIconTextGap(8);
+        btn.setMargin(new Insets(5, 15, 5, 15));
         btn.setFocusPainted(false);
         btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        btn.setPreferredSize(new Dimension(160, 40));
+        btn.setPreferredSize(new Dimension(145, 40));
+
+        // efek hover untuk button biar agak bagus
+        Color p = color;
+        btn.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btn.setBackground(p.brighter());
+            }
+
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btn.setBackground(p);
+            }
+        });
         return btn;
     }
 
     private Room getSelectedRoom() {
         int index = roomSelector.getSelectedIndex();
         switch (index) {
-            case 0: return room1;
-            case 1: return room2;
-            case 2: return room3;
-            default: return room1;
+            case 0:
+                return room1;
+            case 1:
+                return room2;
+            case 2:
+                return room3;
+            default:
+                return room1;
         }
     }
 
     // Memisahkan update text agar bisa dipanggil oleh slider secara real-time
     private void updateStatusText(Room r, boolean isDapur) {
-        String info =
-                "Ruangan : " + r.getName() + "\n\n" +
+        String info = "Ruangan : " + r.getName() + "\n\n" +
                 "Lampu   : " + (r.getLamp().isOn() ? "🟢 ON" : "🔴 OFF") + "\n";
 
         if (!isDapur) {
@@ -228,7 +252,8 @@ public class SmartHomeGUI extends JFrame {
 
         updateStatusText(r, isDapur);
 
-        // Mengatur ketersediaan tombol sesuai ruangan (Dapur tidak ada AC dan Pintu di simulasi ini)
+        // Mengatur ketersediaan tombol sesuai ruangan (Dapur tidak ada AC dan Pintu di
+        // simulasi ini)
         acBtn.setVisible(!isDapur);
         doorBtn.setVisible(!isDapur);
         sliderPanel.setVisible(!isDapur);
@@ -244,6 +269,46 @@ public class SmartHomeGUI extends JFrame {
 
         // Update gambar panel CCTV
         cctvPanel.setImage(r.getCurrentImage());
+    }
+
+    // Buat buttonnya jadi agak bulat, tidak kotak kaku
+    class ButtonBulat extends JButton {
+        public ButtonBulat(String text) {
+            super(text);
+            setContentAreaFilled(false);
+            setFocusPainted(false);
+            setBorderPainted(false);
+            setOpaque(false);
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            Graphics2D g2 = (Graphics2D) g.create();
+
+            g2.setRenderingHint(
+                    RenderingHints.KEY_ANTIALIASING,
+                    RenderingHints.VALUE_ANTIALIAS_ON);
+            g2.setColor(new Color(0, 0, 0, 60));
+            g2.fillRoundRect(3, 3, getWidth() - 3, getHeight() - 3, 25, 25);
+
+            g2.setColor(getBackground());
+            g2.fillRoundRect(0, 0, getWidth() - 4, getHeight() - 4, 25, 25);
+            g2.dispose();
+            setContentAreaFilled(false);
+            super.paintComponent(g);
+        }
+
+        @Override
+        protected void paintBorder(Graphics g) {
+            Graphics2D g2 = (Graphics2D) g.create();
+            g2.setRenderingHint(
+                    RenderingHints.KEY_ANTIALIASING,
+                    RenderingHints.VALUE_ANTIALIAS_ON);
+
+            g2.setColor(getBackground().darker());
+            g2.drawRoundRect(0, 0, getWidth() - 5, getHeight() - 5, 25, 25);
+            g2.dispose();
+        }
     }
 
     public static void main(String[] args) {
