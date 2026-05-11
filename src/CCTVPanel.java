@@ -33,10 +33,16 @@ public class CCTVPanel extends JPanel {
             System.out.println("Error load: " + imagePath);
             e.printStackTrace();
         }
+    } 
+
+    public void setImage(String path){
+        this.imagePath = path;
+        loadImage();
+        repaint();
     }
 
     // edit sedikit, tambah animasi fade
-    public void setImage(String path) {
+    public void setImageFade(String path){
         if(path.equals(imagePath))
             return;
 
