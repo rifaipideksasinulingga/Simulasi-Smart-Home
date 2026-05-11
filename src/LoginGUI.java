@@ -114,33 +114,19 @@ public class LoginGUI extends JFrame {
 
                 String username = usernameField.getText();
                 String password = new String(passwordField.getPassword());
+                SmartHomeGUI homeGUI = null;
 
-                if (username.equals("Shakilla Marsya") && password.equals("09021282530086")) {
+                if ((username.equals("Shakilla Marsya") && password.equals("09021282530086"))
+                        || (username.equals("Chanda Putri Zahira") && password.equals("09021282530110"))
+                        || (username.equals("Rifai Pideksa Sinulingga") && password.equals("0902128253010"))
+                        || (username.equals("M Farhan Hidayat") && password.equals("09021282530097"))
+                        || (username.equals("Achmad Daniel Albar") && password.equals("09021282530078"))) {
                     JOptionPane.showMessageDialog(null, "Akses Berhasil!");
-                    new SmartHomeGUI();
+                    homeGUI = new SmartHomeGUI();
                 }
-                else if(username.equals("Chanda Putri Zahira") && password.equals("09021282530110")) {
 
-                } else if (username.equals("Chanda Putri Zahira") && password.equals("09021282530110")) {
-                    JOptionPane.showMessageDialog(null, "Akses Berhasil!");
-                    new SmartHomeGUI();
-                }
-                else if(username.equals("Rifai Pideksa Sinulingga") && password.equals("0902128253010")) {
-
-                } else if (username.equals("Rifai Pideksa Sinulingga") && password.equals("0902128253010")) {
-                    JOptionPane.showMessageDialog(null, "Akses Berhasil!");
-                    SmartHomeGUI homeGUI = new SmartHomeGUI();
+                if (homeGUI != null) {
                     dispose();
-
-                } else if (username.equals("M Farhan Hidayat") && password.equals("09021282530097")) {
-                    JOptionPane.showMessageDialog(null, "Akses Berhasil!");
-                    new SmartHomeGUI();
-                }
-                else if(username.equals("Achmad Daniel Albar") && password.equals("09021282530078")) {
-
-                } else if (username.equals("Achmad Daniel Albar") && password.equals("09021282530078")) {
-                    JOptionPane.showMessageDialog(null, "Akses Berhasil!");
-                    new SmartHomeGUI();
                 } else {
                     JOptionPane.showMessageDialog(null, "Anda tidak memiliki akses");
                 }
