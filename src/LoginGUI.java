@@ -11,7 +11,7 @@ public class LoginGUI extends JFrame {
     public LoginGUI() {
 
         setTitle("Smart Home Login");
-        setSize(550, 500);
+        setSize(700, 700);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
@@ -21,7 +21,7 @@ public class LoginGUI extends JFrame {
 
         // Card login
         JPanel card = new JPanel();
-        card.setPreferredSize(new Dimension(340, 340));
+        card.setPreferredSize(new Dimension(600, 380));
         card.setBackground(new Color(30, 41, 59));
         card.setLayout(new GridBagLayout());
         card.setBorder(
@@ -30,6 +30,7 @@ public class LoginGUI extends JFrame {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 15, 10, 15);
         gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1.0;
 
         // Judul
         JLabel title = new JLabel("SMART HOME");
@@ -65,6 +66,7 @@ public class LoginGUI extends JFrame {
         loginButton.setFocusPainted(false);
         loginButton.setFont(new Font("SansSerif", Font.BOLD, 14));
         loginButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        loginButton.setPreferredSize(new Dimension(150, 50));
 
         // Hover effect
         loginButton.addMouseListener(new MouseAdapter() {
@@ -96,6 +98,8 @@ public class LoginGUI extends JFrame {
         gbc.gridy++;
         card.add(passwordField, gbc);
         gbc.gridy++;
+        gbc.insets = new Insets(25, 15, 10, 15);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
         card.add(loginButton, gbc);
         background.add(card);
         add(background);
@@ -145,8 +149,8 @@ public class LoginGUI extends JFrame {
     }
 
     private void styleTextField(JTextField field) {
-        field.setPreferredSize(new Dimension(200, 35));
-        field.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        field.setPreferredSize(new Dimension(420, 65));
+        field.setFont(new Font("SansSerif", Font.PLAIN, 20));
         field.setBorder(
                 BorderFactory.createCompoundBorder(
                         BorderFactory.createLineBorder(
