@@ -46,28 +46,32 @@ public class LoginGUI extends JFrame {
                 if(username.equals("Shakilla Marsya") && password.equals("09021282530086")) {
 
                     JOptionPane.showMessageDialog(null, "Akses Berhasil!");
-                    new SmartHomeGUI();
+                    SmartHomeGUI homeGUI = new SmartHomeGUI();
+                    dispose();
                 }
                 else if(username.equals("Chanda Putri Zahira") && password.equals("09021282530110")) {
 
                     JOptionPane.showMessageDialog(null, "Akses Berhasil!");
-                    new SmartHomeGUI();
+                    SmartHomeGUI homeGUI = new SmartHomeGUI();
+                    dispose();
                 }
                 else if(username.equals("Rifai Pideksa Sinulingga") && password.equals("0902128253010")) {
 
                     JOptionPane.showMessageDialog(null, "Akses Berhasil!");
-                    new SmartHomeGUI();
+                    SmartHomeGUI homeGUI = new SmartHomeGUI();
                     dispose();
                 }
                 else if(username.equals("M Farhan Hidayat") && password.equals("09021282530097")) {
 
                     JOptionPane.showMessageDialog(null, "Akses Berhasil!");
-                    new SmartHomeGUI();
+                    SmartHomeGUI homeGUI = new SmartHomeGUI();
+                    dispose();
                 }
                 else if(username.equals("Achmad Daniel Albar") && password.equals("09021282530078")) {
 
                     JOptionPane.showMessageDialog(null, "Akses Berhasil!");
-                    new SmartHomeGUI();
+                    SmartHomeGUI homeGUI = new SmartHomeGUI();
+                    dispose();
                 } else {
                     JOptionPane.showMessageDialog(null,
                             "Anda tidak memiliki akses");
@@ -79,7 +83,7 @@ public class LoginGUI extends JFrame {
     }
 
     public static void main(String[] args) {
-        new LoginGUI();
+        new LoginGUI(); 
 
     }
 
