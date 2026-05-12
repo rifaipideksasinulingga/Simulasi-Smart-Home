@@ -79,8 +79,9 @@ public class SmartHomeGUI extends JFrame {
         statusContainer.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 10));
         statusContainer.setOpaque(false);
 
-        statusArea = new JTextArea(12, 22);
+        statusArea = new JTextArea();
         statusArea.setEditable(false);
+        statusArea.setPreferredSize(new Dimension(220,240));
         // Desain ala monitor digital
         statusArea.setFont(new Font("Monospaced", Font.BOLD, 15));
         statusArea.setBackground(new Color(30, 30, 30));
