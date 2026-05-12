@@ -34,21 +34,6 @@ public class LoginGUI extends JFrame {
         cardPanel.setLayout(new BoxLayout(cardPanel, BoxLayout.Y_AXIS));
         cardPanel.setBorder(new EmptyBorder(25, 50, 25, 50));
 
-        JLabel title = new JLabel("SMART HOME");
-        title.setFont(new Font("Segoe UI", Font.BOLD, 26));
-        title.setForeground(Color.WHITE);
-        title.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-        JLabel subtitle = new JLabel("Login untuk akses SmartHome");
-        subtitle.setFont(new Font("Montserrat", Font.PLAIN, 13));
-        subtitle.setForeground(Color.LIGHT_GRAY);
-        subtitle.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-        // Username
-        JLabel userLabel = new JLabel("Username");
-        userLabel.setForeground(Color.WHITE);
-        userLabel.setFont(new Font("Montserrat", Font.PLAIN, 14));
-        userLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 15, 10, 15);
@@ -78,12 +63,6 @@ public class LoginGUI extends JFrame {
         usernameField = new JTextField();
         usernameField.setMaximumSize(new Dimension(Integer.MAX_VALUE, 38));
         usernameField.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-
-        // Password
-        JLabel passLabel = new JLabel("Password");
-        passLabel.setForeground(Color.WHITE);
-        passLabel.setFont(new Font("Montserrat", Font.PLAIN, 14));
-        passLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         passwordField = new JPasswordField();
         passwordField.setMaximumSize(new Dimension(Integer.MAX_VALUE, 38));
@@ -120,7 +99,7 @@ public class LoginGUI extends JFrame {
         cardPanel.add(usernameField);
         cardPanel.add(Box.createVerticalStrut(10));
 
-        cardPanel.add(passLabel);
+        cardPanel.add(pwLabel);
         cardPanel.add(Box.createVerticalStrut(5));
         cardPanel.add(passwordField);
         cardPanel.add(Box.createVerticalStrut(20));
@@ -137,7 +116,6 @@ public class LoginGUI extends JFrame {
 
                 String username = usernameField.getText();
                 String password = new String(passwordField.getPassword());
-                SmartHomeGUI homeGUI = null;
 
                 if ((username.equals("Shakilla Marsya") && password.equals("09021282530086"))
                         || (username.equals("Chanda Putri Zahira") && password.equals("09021282530110"))
@@ -185,20 +163,6 @@ public class LoginGUI extends JFrame {
         setVisible(true);
     }
 
-    private void styleTextField(JTextField field) {
-        field.setPreferredSize(new Dimension(420, 65));
-        field.setFont(new Font("SansSerif", Font.PLAIN, 20));
-        field.setBorder(
-                BorderFactory.createCompoundBorder(
-                        BorderFactory.createLineBorder(
-                                new Color(100, 116, 139), 1),
-                        BorderFactory.createEmptyBorder(
-                                5, 10, 5, 10)));
-
-        field.setBackground(new Color(51, 65, 85));
-        field.setForeground(Color.WHITE);
-        field.setCaretColor(Color.WHITE);
-    }
 
     public static void main(String[] args) {
         new LoginGUI();
