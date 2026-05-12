@@ -142,7 +142,11 @@ public class SmartHomeGUI extends JFrame {
         add(controlPanel, BorderLayout.SOUTH);
 
         // --- Event Listeners ---
-        roomSelector.addActionListener(e -> updateDisplay());
+        roomSelector.addActionListener(e -> {
+            Room a = getSelectedRoom();
+            cctvPanel.setImageFade(a.getCurrentImage());
+            updateDisplay();
+        });
 
         lampBtn.addActionListener(e -> {
             Room r = getSelectedRoom();

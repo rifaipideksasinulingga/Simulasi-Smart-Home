@@ -50,6 +50,31 @@ public class LoginGUI extends JFrame {
         userLabel.setFont(new Font("Montserrat", Font.PLAIN, 14));
         userLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 15, 10, 15);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1.0;
+
+        // Judul
+        JLabel title = new JLabel("SMART HOME");
+        title.setForeground(Color.WHITE);
+        title.setFont(new Font("SansSerif", Font.BOLD, 24));
+        title.setHorizontalAlignment(SwingConstants.CENTER);
+
+        JLabel subtitle = new JLabel("Saran teks");
+        subtitle.setForeground(Color.LIGHT_GRAY);
+        subtitle.setHorizontalAlignment(SwingConstants.CENTER);
+
+        // Label
+        JLabel userLabel = new JLabel("👤 Username");
+        userLabel.setForeground(Color.WHITE);
+        userLabel.setFont(new Font("SansSerif", Font.BOLD, 13));
+
+        JLabel pwLabel = new JLabel("🔒 Password");
+        pwLabel.setForeground(Color.WHITE);
+        pwLabel.setFont(new Font("SansSerif", Font.BOLD, 13));
+
+        // Textfield
         usernameField = new JTextField();
         usernameField.setMaximumSize(new Dimension(Integer.MAX_VALUE, 38));
         usernameField.setFont(new Font("Segoe UI", Font.PLAIN, 14));
@@ -105,16 +130,20 @@ public class LoginGUI extends JFrame {
         mainPanel.add(cardPanel);
         add(mainPanel);
 
-        // Action login
+        //login
         loginButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
 
                 String username = usernameField.getText();
                 String password = new String(passwordField.getPassword());
+                SmartHomeGUI homeGUI = null;
 
-                if(username.equals("Shakilla Marsya") && password.equals("09021282530086")) {
-
+                if ((username.equals("Shakilla Marsya") && password.equals("09021282530086"))
+                        || (username.equals("Chanda Putri Zahira") && password.equals("09021282530110"))
+                        || (username.equals("Rifai Pideksa Sinulingga") && password.equals("0902128253010"))
+                        || (username.equals("M Farhan Hidayat") && password.equals("09021282530097"))
+                        || (username.equals("Achmad Daniel Albar") && password.equals("09021282530078"))) {
                     JOptionPane.showMessageDialog(null, "Akses Berhasil!");
                     new SmartHomeGUI();
                     dispose();
@@ -153,8 +182,22 @@ public class LoginGUI extends JFrame {
                 }
             }
         });
-
         setVisible(true);
+    }
+
+    private void styleTextField(JTextField field) {
+        field.setPreferredSize(new Dimension(420, 65));
+        field.setFont(new Font("SansSerif", Font.PLAIN, 20));
+        field.setBorder(
+                BorderFactory.createCompoundBorder(
+                        BorderFactory.createLineBorder(
+                                new Color(100, 116, 139), 1),
+                        BorderFactory.createEmptyBorder(
+                                5, 10, 5, 10)));
+
+        field.setBackground(new Color(51, 65, 85));
+        field.setForeground(Color.WHITE);
+        field.setCaretColor(Color.WHITE);
     }
 
     public static void main(String[] args) {
