@@ -1,4 +1,5 @@
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.*;
 
@@ -9,23 +10,45 @@ public class LoginGUI extends JFrame {
     private JButton loginButton;
 
     public LoginGUI() {
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         setTitle("Smart Home Login");
-        setSize(700, 700);
+        setSize(450, 350);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
+        setResizable(false);
 
-        // Background utama
-        JPanel background = new JPanel(new GridBagLayout());
-        background.setBackground(new Color(15, 23, 42));
+        //bg
+        JPanel mainPanel = new JPanel();
+        mainPanel.setBackground(new Color(24, 28, 33));
+        mainPanel.setLayout(new GridBagLayout());
 
-        // Card login
-        JPanel card = new JPanel();
-        card.setPreferredSize(new Dimension(600, 380));
-        card.setBackground(new Color(30, 41, 59));
-        card.setLayout(new GridBagLayout());
-        card.setBorder(
-                BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        //log
+        JPanel cardPanel = new JPanel();
+        cardPanel.setPreferredSize(new Dimension(340, 350));
+        cardPanel.setBackground(new Color(40, 44, 52));
+        cardPanel.setLayout(new BoxLayout(cardPanel, BoxLayout.Y_AXIS));
+        cardPanel.setBorder(new EmptyBorder(25, 50, 25, 50));
+
+        JLabel title = new JLabel("SMART HOME");
+        title.setFont(new Font("Segoe UI", Font.BOLD, 26));
+        title.setForeground(Color.WHITE);
+        title.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        JLabel subtitle = new JLabel("Login untuk akses SmartHome");
+        subtitle.setFont(new Font("Montserrat", Font.PLAIN, 13));
+        subtitle.setForeground(Color.LIGHT_GRAY);
+        subtitle.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        // Username
+        JLabel userLabel = new JLabel("Username");
+        userLabel.setForeground(Color.WHITE);
+        userLabel.setFont(new Font("Montserrat", Font.PLAIN, 14));
+        userLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 15, 10, 15);
@@ -53,61 +76,61 @@ public class LoginGUI extends JFrame {
 
         // Textfield
         usernameField = new JTextField();
+        usernameField.setMaximumSize(new Dimension(Integer.MAX_VALUE, 38));
+        usernameField.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+
+        // Password
+        JLabel passLabel = new JLabel("Password");
+        passLabel.setForeground(Color.WHITE);
+        passLabel.setFont(new Font("Montserrat", Font.PLAIN, 14));
+        passLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
         passwordField = new JPasswordField();
+        passwordField.setMaximumSize(new Dimension(Integer.MAX_VALUE, 38));
+        passwordField.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 
-        styleTextField(usernameField);
-        styleTextField(passwordField);
-
-        // Button login
+        // Tombol login
         loginButton = new JButton("LOGIN");
-
-        loginButton.setBackground(new Color(59, 130, 246));
-        loginButton.setForeground(Color.WHITE);
         loginButton.setFocusPainted(false);
-        loginButton.setFont(new Font("SansSerif", Font.BOLD, 14));
+        loginButton.setBackground(new Color(0, 120, 215));
+        loginButton.setForeground(new Color(24, 28, 33));
+        loginButton.setFont(new Font("Segoe UI", Font.BOLD, 14));
         loginButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        loginButton.setPreferredSize(new Dimension(150, 50));
+        loginButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         // Hover effect
         loginButton.addMouseListener(new MouseAdapter() {
-            @Override
             public void mouseEntered(MouseEvent e) {
-                loginButton.setBackground(
-                        new Color(96, 165, 250));
+                loginButton.setBackground(new Color(30, 144, 255));
             }
 
-            @Override
             public void mouseExited(MouseEvent e) {
-                loginButton.setBackground(
-                        new Color(59, 130, 246));
+                loginButton.setBackground(new Color(0, 120, 215));
             }
         });
 
-        // Layout
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        card.add(title, gbc);
-        gbc.gridy++;
-        card.add(subtitle, gbc);
-        gbc.gridy++;
-        card.add(userLabel, gbc);
-        gbc.gridy++;
-        card.add(usernameField, gbc);
-        gbc.gridy++;
-        card.add(pwLabel, gbc);
-        gbc.gridy++;
-        card.add(passwordField, gbc);
-        gbc.gridy++;
-        gbc.insets = new Insets(25, 15, 10, 15);
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        card.add(loginButton, gbc);
-        background.add(card);
-        add(background);
+        // Tambah komponen ke card
+        cardPanel.add(title);
+        cardPanel.add(Box.createVerticalStrut(5));
+        cardPanel.add(subtitle);
+        cardPanel.add(Box.createVerticalStrut(20));
 
-        // Enter untuk login
-        getRootPane().setDefaultButton(loginButton);
+        cardPanel.add(userLabel);
+        cardPanel.add(Box.createVerticalStrut(5));
+        cardPanel.add(usernameField);
+        cardPanel.add(Box.createVerticalStrut(10));
 
-        // Action login
+        cardPanel.add(passLabel);
+        cardPanel.add(Box.createVerticalStrut(5));
+        cardPanel.add(passwordField);
+        cardPanel.add(Box.createVerticalStrut(20));
+
+        cardPanel.add(loginButton);
+
+        mainPanel.add(cardPanel);
+        add(mainPanel);
+
+        //login
         loginButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -122,13 +145,40 @@ public class LoginGUI extends JFrame {
                         || (username.equals("M Farhan Hidayat") && password.equals("09021282530097"))
                         || (username.equals("Achmad Daniel Albar") && password.equals("09021282530078"))) {
                     JOptionPane.showMessageDialog(null, "Akses Berhasil!");
-                    homeGUI = new SmartHomeGUI();
-                }
-
-                if (homeGUI != null) {
+                    new SmartHomeGUI();
                     dispose();
+
+                } else if(username.equals("Chanda Putri Zahira") && password.equals("09021282530110")) {
+
+                    JOptionPane.showMessageDialog(null, "Akses Berhasil!");
+                    new SmartHomeGUI();
+                    dispose();
+
+                } else if(username.equals("Rifai Pideksa Sinulingga") && password.equals("0902128253010")) {
+
+                    JOptionPane.showMessageDialog(null, "Akses Berhasil!");
+                    new SmartHomeGUI();
+                    dispose();
+                } else if(username.equals("M Farhan Hidayat") && password.equals("09021282530097")) {
+
+                    JOptionPane.showMessageDialog(null, "Akses Berhasil!");
+                    new SmartHomeGUI();
+                    dispose();
+
+                } else if(username.equals("Achmad Daniel Albar") && password.equals("09021282530078")) {
+
+                    JOptionPane.showMessageDialog(null, "Akses Berhasil!");
+                    new SmartHomeGUI();
+                    dispose();
+
                 } else {
-                    JOptionPane.showMessageDialog(null, "Anda tidak memiliki akses");
+
+                    JOptionPane.showMessageDialog(
+                            null,
+                            "Anda tidak memiliki akses",
+                            "Login Gagal",
+                            JOptionPane.ERROR_MESSAGE
+                    );
                 }
             }
         });
@@ -151,8 +201,6 @@ public class LoginGUI extends JFrame {
     }
 
     public static void main(String[] args) {
-        new LoginGUI(); 
-
+        new LoginGUI();
     }
-
 }
