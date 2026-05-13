@@ -22,13 +22,14 @@ public class Room {
         return devices;
     }
 
+    // Method getName untuk Ruangan
     public String getName() {
         return name;
     }
 
-    // Gambar ruangan akan "ON" jika minimal ada satu lampu yang menyala
     public String getCurrentImage() {
         for (Device d : devices) {
+            // Jika ada satu saja Lampu yang menyala, ruangan dianggap terang
             if (d instanceof Lamp && d.isOn()) {
                 return imageOn;
             }

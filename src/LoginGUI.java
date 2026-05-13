@@ -1,7 +1,7 @@
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.*;
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 
 public class LoginGUI extends JFrame {
 
@@ -46,9 +46,9 @@ public class LoginGUI extends JFrame {
         title.setFont(new Font("SansSerif", Font.BOLD, 24));
         title.setHorizontalAlignment(SwingConstants.CENTER);
 
-        JLabel subtitle = new JLabel("Saran teks");
+        /*JLabel subtitle = new JLabel("Saran teks");
         subtitle.setForeground(Color.LIGHT_GRAY);
-        subtitle.setHorizontalAlignment(SwingConstants.CENTER);
+        subtitle.setHorizontalAlignment(SwingConstants.CENTER);*/
 
         // Label
         JLabel userLabel = new JLabel("👤 Username");
@@ -91,8 +91,8 @@ public class LoginGUI extends JFrame {
         // Tambah komponen ke card
         cardPanel.add(title);
         cardPanel.add(Box.createVerticalStrut(5));
-        cardPanel.add(subtitle);
-        cardPanel.add(Box.createVerticalStrut(20));
+        /*cardPanel.add(subtitle);
+        cardPanel.add(Box.createVerticalStrut(20));*/
 
         cardPanel.add(userLabel);
         cardPanel.add(Box.createVerticalStrut(5));

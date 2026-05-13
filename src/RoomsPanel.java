@@ -171,20 +171,57 @@ public class RoomsPanel extends JPanel {
 
     class ToggleSwitch extends JComponent {
         private boolean activated;
+        private Color colorOn = new Color(46, 204, 113); // Hijau
+        private Color colorOff = new Color(160, 170, 185); // Abu-abu
+        
         public ToggleSwitch(boolean activated) {
-            this.activated = activated; setPreferredSize(new Dimension(46, 24)); setCursor(new Cursor(Cursor.HAND_CURSOR));
+            this.activated = activated; 
+            setPreferredSize(new Dimension(50, 26)); 
+            setCursor(new Cursor(Cursor.HAND_CURSOR));
+            
+            addMouseListener(new java.awt.event.MouseAdapter() {
+                @Override
+                public void mouseReleased(java.awt.event.MouseEvent e) {
+                    setActivated(!isActivated());
+                }
+            });
         }
+        
         public boolean isActivated() { return activated; }
         public void setActivated(boolean activated) { this.activated = activated; repaint(); }
-        @Override protected void paintComponent(Graphics g) {
+        
+        @Override 
+        protected void paintComponent(Graphics g) {
             Graphics2D g2 = (Graphics2D) g.create();
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            int width = getWidth(); int height = getHeight();
-            if (activated) g2.setColor(colorOn); else g2.setColor(colorOff);
-            g2.fillRoundRect(0, 0, width, height, height, height);
+            
+            // KUNCI UKURAN: Gunakan ukuran pasti, bukan ukuran dari layout
+            int drawWidth = 50;
+            int drawHeight = 26;
+            
+            // Pusatkan sakelar jika container-nya dipaksa membesar oleh layout
+            int xPos = (getWidth() - drawWidth) / 2;
+            int yPos = (getHeight() - drawHeight) / 2;
+            
+            // 1. Background Sakelar
+            if (activated) g2.setColor(colorOn); 
+            else g2.setColor(colorOff);
+            g2.fillRoundRect(xPos, yPos, drawWidth, drawHeight, drawHeight, drawHeight);
+            
+            // 2. Bulatan Putih (Thumb)
+            int thumbSize = drawHeight - 6; 
+            int thumbY = yPos + 3;
+            int thumbX = activated ? xPos + drawWidth - thumbSize - 3 : xPos + 3;
+            
+            // 3. Bayangan Tipis
+            g2.setColor(new Color(0, 0, 0, 40));
+            g2.fillOval(thumbX, thumbY + 1, thumbSize, thumbSize);
+            
+            // 4. Bulatan Putih
             g2.setColor(Color.WHITE);
-            int thumbSize = height - 4; int x = activated ? width - thumbSize - 2 : 2;
-            g2.fillOval(x, 2, thumbSize, thumbSize); g2.dispose();
+            g2.fillOval(thumbX, thumbY, thumbSize, thumbSize);
+            
+            g2.dispose();
         }
     }
 }

@@ -10,6 +10,7 @@ public class SettingsPanel extends JPanel {
 
     private JTextField nameField;
     private SmartHomeGUI mainFrame;
+    String newName= "";
 
     public SettingsPanel(SmartHomeGUI mainFrame) {
         this.mainFrame = mainFrame;
@@ -33,7 +34,7 @@ public class SettingsPanel extends JPanel {
         container.add(lblName);
         container.add(Box.createVerticalStrut(10));
 
-        nameField = new JTextField("Andi Prasetyo");
+        nameField = new JTextField();
         nameField.setMaximumSize(new Dimension(400, 40));
         nameField.setBackground(colorCard);
         nameField.setForeground(textPrimary);
@@ -50,10 +51,14 @@ public class SettingsPanel extends JPanel {
         btnSave.setPreferredSize(new Dimension(200, 40));
         btnSave.addActionListener(e -> {
             String newName = nameField.getText();
+            mainFrame.setUserName(newName);
             JOptionPane.showMessageDialog(this, "Profil berhasil diperbarui!");
         });
         container.add(btnSave);
 
         add(container, BorderLayout.NORTH);
+    }
+    public String getUser(){
+        return newName;
     }
 }
