@@ -1,319 +1,263 @@
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.*;
-import javax.swing.border.TitledBorder;
+import javax.swing.border.EmptyBorder;
 
 public class SmartHomeGUI extends JFrame {
-    private JComboBox<String> roomSelector;
-    private JTextArea statusArea;
-    private CCTVPanel cctvPanel;
-    private JButton lampBtn, acBtn, doorBtn;
-    private JSlider tempSlider;
-    private JPanel sliderPanel;
+    private List<Room> rooms;
+    // --- Palet Warna Dark Theme ---
+    private Color colorBackground = new Color(25, 29, 38);      // Background utama
+    private Color colorSidebar = new Color(33, 38, 48);         // Warna sidebar
+    private Color colorPanel = new Color(42, 48, 60);           // Warna panel/kartu
+    private Color colorAccent = new Color(0, 120, 215);         // Biru aksen (tombol aktif)
+    private Color textPrimary = Color.WHITE;
+    private Color textSecondary = new Color(160, 170, 185);
+    private JLabel lblProfileName; // Tambahkan ini
+    private JTextField searchField;
+    private JButton btnAdd;
 
-    private Room room1;
-    private Room room2;
-    private Room room3;
-
-    private boolean isUpdatingUI = false;
+    // Komponen Navigasi
+    private JPanel contentPanel;
+    private CardLayout cardLayout;
+    private JLabel lblPageTitle;
+    private JLabel lblPageSubtitle;
 
     public SmartHomeGUI() {
-        // 1. Mengatur Look and Feel agar GUI terlihat lebih modern mengikuti sistem OS
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        rooms = new ArrayList<>();
+        Room r1 = new Room("Ruang Tamu", "/images/LR_LampOn_DoorCl.png", "/images/LR_LampOff_DoorCl.png");
+        r1.addDevice(new Lamp("Lampu Utama"));
+        r1.addDevice(new AC("AC Ruangan"));
+        r1.addDevice(new Door("Pintu Utama"));
+        
+        Room r2 = new Room("Kamar Tidur", "/images/Kamar2_On.png", "/images/Kamar2_Off.png");
+        r2.addDevice(new Lamp("Lampu Tidur"));
+        r2.addDevice(new GenericDevice("PC Desktop"));
 
-        // Inisialisasi Ruangan
-        room1 = new Room(
-                "Ruang Tamu",
-                "/images/LR_LampOn_DoorCl.png",
-                "/images/LR_LampOff_DoorCl.png");
+        Room r3 = new Room("Dapur", "/images/K_LampOn.png", "/images/K_LampOff.png");
+        r3.addDevice(new Lamp("Lampu Dapur"));
+        r3.addDevice(new GenericDevice("Kulkas Pintar"));
 
-        room2 = new Room(
-                "Kamar Tidur",
-                "/images/Gemini_Generated_Image_43qujw43qujw43qu.png",
-                "/images/Gemini_Generated_Image_43qujw43qujw43qu (1).png");
+        rooms.add(r1);
+        rooms.add(r2);
+        rooms.add(r3);
 
-        room3 = new Room(
-                "Dapur",
-                "/images/K_LampOn.png",
-                "/images/K_LampOff.png");
+        lblProfileName = new JLabel("👦 Andi Prasetyo");
+        
+        /*btnAdd.addActionListener(e -> {
+            String query = searchField.getText().toLowerCase().replace(" 🔍 cari perangkat...", "").trim();
+            JOptionPane.showMessageDialog(this, "Mencari: " + query + "\n(Tips: Gunakan menu 'Devices' untuk melihat hasil filter)");
+        });*/
 
-        setTitle("Smart Home CCTV Monitor");
-        setSize(1050, 550); // Ukuran sedikit dilebarkan
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setLayout(new BorderLayout(10, 10)); // Menambahkan jarak antar komponen
-        getContentPane().setBackground(new Color(240, 244, 248)); // Warna latar aplikasi
+        // Setup Window Dasar
+        setTitle("HOME SYNC Pro - Smart Home Simulator");
+        setSize(1280, 720); // Resolusi HD
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+        setLayout(new BorderLayout());
+        getContentPane().setBackground(colorBackground);
 
-        // --- Panel Atas (Pemilihan Ruangan) ---
-        JPanel headerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 15));
-        headerPanel.setBackground(new Color(44, 62, 80));
+        // 1. Tambahkan Sidebar di sisi kiri (WEST)
+        add(createSidebar(), BorderLayout.WEST);
 
-        JLabel titleLabel = new JLabel("Pilih Ruangan: ");
-        titleLabel.setForeground(Color.WHITE);
-        titleLabel.setFont(new Font("SansSerif", Font.BOLD, 16));
+        // 2. Setup Area Utama di sisi tengah (CENTER)
+        JPanel mainArea = new JPanel(new BorderLayout());
+        mainArea.setBackground(colorBackground);
+        
+        mainArea.add(createTopBar(), BorderLayout.NORTH);
 
-        roomSelector = new JComboBox<>(new String[] {
-                "Ruang Tamu", "Kamar Tidur", "Dapur"
-        });
-        roomSelector.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        // 3. Setup Content Panel (Tempat halaman berganti-ganti)
+        cardLayout = new CardLayout();
+        contentPanel = new JPanel(cardLayout);
+        contentPanel.setBackground(colorBackground);
+        contentPanel.setBorder(new EmptyBorder(20, 20, 20, 20)); // Margin keliling
 
-        headerPanel.add(titleLabel);
-        headerPanel.add(roomSelector);
-        add(headerPanel, BorderLayout.NORTH);
+        // Tambahkan halaman-halaman (sementara berupa halaman kosong/placeholder)
+        contentPanel.add(new DashboardPanel(), "Dashboard");
+        contentPanel.add(new DevicesPanel(rooms), "Devices");
+        contentPanel.add(new RoomsPanel(rooms), "Rooms");
+        contentPanel.add(new AutomationsPanel(rooms), "Automations");
+        contentPanel.add(new SecurityPanel(rooms), "Security");
+        contentPanel.add(new SettingsPanel(this), "Settings");  
 
-        // --- Panel Tengah (Monitor CCTV) ---
-        cctvPanel = new CCTVPanel(room1.getCurrentImage());
-        cctvPanel.setBorder(BorderFactory.createTitledBorder(
-                BorderFactory.createLineBorder(Color.GRAY, 1),
-                " Live Camera Feed ",
-                TitledBorder.CENTER,
-                TitledBorder.TOP,
-                new Font("SansSerif", Font.BOLD, 14),
-                Color.DARK_GRAY));
-        add(cctvPanel, BorderLayout.CENTER);
+        mainArea.add(contentPanel, BorderLayout.CENTER);
+        add(mainArea, BorderLayout.CENTER);
 
-        // --- Panel Kanan (Status Ruangan) ---
-        JPanel statusContainer = new JPanel(new BorderLayout());
-        statusContainer.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 10));
-        statusContainer.setOpaque(false);
-
-        statusArea = new JTextArea();
-        statusArea.setEditable(false);
-        statusArea.setPreferredSize(new Dimension(220,240));
-        // Desain ala monitor digital
-        statusArea.setFont(new Font("Monospaced", Font.BOLD, 15));
-        statusArea.setBackground(new Color(30, 30, 30));
-        statusArea.setForeground(new Color(0, 255, 0));
-        statusArea.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
-
-        JScrollPane scrollPane = new JScrollPane(statusArea);
-        scrollPane.setBorder(BorderFactory.createTitledBorder(
-                null, " Informasi Status ", TitledBorder.LEFT, TitledBorder.TOP,
-                new Font("SansSerif", Font.BOLD, 14)));
-        statusContainer.add(scrollPane, BorderLayout.CENTER);
-        add(statusContainer, BorderLayout.EAST);
-
-        // --- Panel Bawah (Kontrol Perangkat) ---
-        JPanel controlPanel = new JPanel(new GridBagLayout());
-        controlPanel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createEmptyBorder(10, 10, 20, 10),
-                BorderFactory.createTitledBorder(null, " Panel Kontrol Perangkat ", TitledBorder.LEFT, TitledBorder.TOP,
-                        new Font("SansSerif", Font.BOLD, 14))));
-
-        lampBtn = createStyledButton("💡 ON/OFF Lampu", new Color(46, 204, 113));
-        doorBtn = createStyledButton("🚪 Lock/Unlock Pintu", new Color(231, 76, 60));
-        acBtn = createStyledButton("❄️ ON/OFF AC", new Color(52, 152, 219));
-
-        // Konfigurasi Slider Suhu (Sebagai pengganti tombol Set Temp)
-        tempSlider = new JSlider(JSlider.HORIZONTAL, 16, 30, 24);
-        tempSlider.setMajorTickSpacing(2);
-        tempSlider.setMinorTickSpacing(1);
-        tempSlider.setPaintTicks(true);
-        tempSlider.setPaintLabels(true);
-        tempSlider.setFont(new Font("SansSerif", Font.PLAIN, 12));
-
-        sliderPanel = new JPanel(new BorderLayout());
-        JLabel sliderLabel = new JLabel("Pengatur Suhu AC (°C):", SwingConstants.CENTER);
-        sliderLabel.setFont(new Font("SansSerif", Font.BOLD, 12));
-        sliderPanel.add(sliderLabel, BorderLayout.NORTH);
-        sliderPanel.add(tempSlider, BorderLayout.CENTER);
-
-        // Mengatur Layout Tombol-tombol di Bawah
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(10, 10, 10, 10);
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.weightx = 1.0;
-
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        controlPanel.add(lampBtn, gbc);
-
-        gbc.gridx = 1;
-        controlPanel.add(doorBtn, gbc);
-
-        gbc.gridx = 2;
-        controlPanel.add(acBtn, gbc);
-
-        gbc.gridx = 3;
-        gbc.weightx = 2.0; // Slider diberikan ruang lebih besar
-        controlPanel.add(sliderPanel, gbc);
-
-        add(controlPanel, BorderLayout.SOUTH);
-
-        // --- Event Listeners ---
-        roomSelector.addActionListener(e -> {
-            Room a = getSelectedRoom();
-            cctvPanel.setImageFade(a.getCurrentImage());
-            updateDisplay();
-        });
-
-        lampBtn.addActionListener(e -> {
-            Room r = getSelectedRoom();
-            if (r.getLamp().isOn())
-                r.getLamp().turnOff();
-            else
-                r.getLamp().turnOn();
-            updateDisplay();
-        });
-
-        acBtn.addActionListener(e -> {
-            Room r = getSelectedRoom();
-            if (r.getAC().isOn())
-                r.getAC().turnOff();
-            else
-                r.getAC().turnOn();
-            updateDisplay();
-        });
-
-        doorBtn.addActionListener(e -> {
-            Room r = getSelectedRoom();
-            if (r.getDoor().isOn())
-                r.getDoor().unlock();
-            else
-                r.getDoor().lock();
-            updateDisplay();
-        });
-
-        // Event listener untuk Slider layaknya volume
-        tempSlider.addChangeListener(e -> {
-            if (isUpdatingUI)
-                return; // Mencegah looping event saat mengganti ruangan
-
-            Room r = getSelectedRoom();
-            if (r.getAC().isOn()) {
-                r.getAC().setTemperature(tempSlider.getValue());
-                updateStatusText(r, r.getName().equals("Dapur")); // Update text tanpa kedip
-            }
-        });
-
-        // Panggil update pertama kali saat aplikasi dibuka
-        updateDisplay();
-        setLocationRelativeTo(null); // Tampilkan di tengah layar
         setVisible(true);
     }
 
-    // Fungsi bantuan untuk mempercantik UI Tombol
-    private JButton createStyledButton(String text, Color color) {
-        JButton btn = new ButtonBulat(text);
-        btn.setBackground(color);
-        btn.setForeground(Color.WHITE);
-        btn.setFont(new Font("SansSerif", Font.BOLD, 13));
-        btn.setHorizontalAlignment(SwingConstants.CENTER);
-        btn.setIconTextGap(8);
-        btn.setMargin(new Insets(5, 15, 5, 15));
-        btn.setFocusPainted(false);
-        btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        btn.setPreferredSize(new Dimension(145, 40));
+    // --- FUNGSI PEMBUAT SIDEBAR ---
+    private JPanel createSidebar() {
+        JPanel sidebar = new JPanel();
+        sidebar.setLayout(new BoxLayout(sidebar, BoxLayout.Y_AXIS));
+        sidebar.setBackground(colorSidebar);
+        sidebar.setPreferredSize(new Dimension(250, 0));
+        sidebar.setBorder(new EmptyBorder(20, 10, 20, 10));
 
-        // efek hover untuk button biar agak bagus
-        Color p = color;
-        btn.addMouseListener(new java.awt.event.MouseAdapter() {
+        // Logo / Title App
+        JLabel logo = new JLabel("🏠 HOME SYNC");
+        logo.setFont(new Font("SansSerif", Font.BOLD, 22));
+        logo.setForeground(textPrimary);
+        logo.setAlignmentX(Component.CENTER_ALIGNMENT);
+        sidebar.add(logo);
+        sidebar.add(Box.createVerticalStrut(40));
+
+        // Menu Buttons
+        String[] menus = {"Dashboard", "Devices", "Rooms", "Automations", "Security", "Settings"};
+        String[] icons = {"🏠", "🖥️", "🪟", "⚙️", "🛡️", "🔧"};
+
+        for (int i = 0; i < menus.length; i++) {
+            JPanel menuBtn = createMenuButton(icons[i] + "  " + menus[i], menus[i]);
+            sidebar.add(menuBtn);
+            sidebar.add(Box.createVerticalStrut(10));
+        }
+
+        // Profil User di bawah (Mendorong komponen ke bawah menggunakan lem vertikal)
+        sidebar.add(Box.createVerticalGlue());
+        
+        JPanel profilePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        profilePanel.setBackground(colorSidebar);
+        profilePanel.setMaximumSize(new Dimension(230, 50));
+        JLabel lblProfile = new JLabel("👦 Andi Prasetyo");
+        lblProfile.setForeground(textPrimary);
+        lblProfile.setFont(new Font("SansSerif", Font.BOLD, 14));
+        profilePanel.add(lblProfile);
+        
+        sidebar.add(profilePanel);
+
+        return sidebar;
+    }
+
+    // --- FUNGSI PEMBUAT TOMBOL MENU SIDEBAR ---
+    private JPanel createMenuButton(String text, String cardName) {
+        JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT, 15, 10));
+        panel.setBackground(colorSidebar);
+        panel.setMaximumSize(new Dimension(230, 45));
+        panel.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+        JLabel label = new JLabel(text);
+        label.setForeground(textSecondary);
+        label.setFont(new Font("SansSerif", Font.BOLD, 14));
+        panel.add(label);
+
+        // Efek Hover & Klik
+        panel.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                btn.setBackground(p.brighter());
+            public void mouseEntered(MouseEvent e) {
+                panel.setBackground(colorPanel);
+                label.setForeground(textPrimary);
             }
 
             @Override
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                btn.setBackground(p);
+            public void mouseExited(MouseEvent e) {
+                panel.setBackground(colorSidebar);
+                label.setForeground(textSecondary);
+            }
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                // Ganti halaman di CardLayout
+                cardLayout.show(contentPanel, cardName);
+                // Ubah judul Top Bar sesuai menu yang diklik
+                lblPageTitle.setText(cardName.equals("Dashboard") ? "Dashboard Utama" : cardName);
+                lblPageSubtitle.setText("Menampilkan halaman " + cardName + ".");
             }
         });
-        return btn;
+
+        // Modifikasi khusus tombol lengkung (Opsional untuk mempercantik)
+        return new JPanel(new BorderLayout()) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(panel.getBackground());
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 15, 15);
+                g2.dispose();
+                super.paintComponent(g);
+            }
+            {
+                setOpaque(false);
+                add(panel);
+            }
+        };
     }
 
-    private Room getSelectedRoom() {
-        int index = roomSelector.getSelectedIndex();
-        switch (index) {
-            case 0:
-                return room1;
-            case 1:
-                return room2;
-            case 2:
-                return room3;
-            default:
-                return room1;
+    // --- FUNGSI PEMBUAT TOP BAR ---
+    private JPanel createTopBar() {
+        JPanel topBar = new JPanel(new BorderLayout());
+        topBar.setBackground(colorBackground);
+        topBar.setBorder(new EmptyBorder(20, 20, 10, 20));
+
+        // Kiri: Judul Halaman
+        JPanel titlePanel = new JPanel(new GridLayout(2, 1));
+        titlePanel.setBackground(colorBackground);
+        
+        lblPageTitle = new JLabel("Dashboard Utama");
+        lblPageTitle.setFont(new Font("SansSerif", Font.BOLD, 26));
+        lblPageTitle.setForeground(textPrimary);
+        
+        lblPageSubtitle = new JLabel("Halo, Andi! Semuanya terlihat normal.");
+        lblPageSubtitle.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        lblPageSubtitle.setForeground(textSecondary);
+        
+        titlePanel.add(lblPageTitle);
+        titlePanel.add(lblPageSubtitle);
+        topBar.add(titlePanel, BorderLayout.WEST);
+
+        // Kanan: Search & Tambah Perangkat
+        JPanel actionPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 15, 0));
+        actionPanel.setBackground(colorBackground);
+
+        searchField = new JTextField(" 🔍 Cari Perangkat...");
+        searchField.setPreferredSize(new Dimension(200, 35));
+        searchField.setBackground(colorSidebar);
+        searchField.setForeground(textSecondary);
+        searchField.setBorder(BorderFactory.createLineBorder(colorPanel, 1));
+        searchField.setCaretColor(Color.WHITE);
+
+        searchField.addActionListener(e -> {
+    String query = searchField.getText().toLowerCase().replace(" 🔍 cari perangkat...", "").trim();
+    JOptionPane.showMessageDialog(this, "Mencari: " + query + "\n(Tips: Gunakan menu 'Devices' untuk melihat hasil filter)");
+});
+
+        btnAdd = new JButton("+ Tambah Perangkat");
+        btnAdd.setBackground(colorAccent);
+        btnAdd.setForeground(Color.WHITE);
+        btnAdd.setFocusPainted(false);
+        btnAdd.setFont(new Font("SansSerif", Font.BOLD, 14));
+        btnAdd.setBorder(new EmptyBorder(8, 15, 8, 15));
+        btnAdd.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+        btnAdd.addActionListener(e -> showAddDeviceDialog());
+
+        actionPanel.add(searchField);
+        actionPanel.add(btnAdd);
+        
+        topBar.add(actionPanel, BorderLayout.EAST);
+
+        return topBar;
+    }
+
+    private void showAddDeviceDialog() {
+        String deviceName = JOptionPane.showInputDialog(this, "Masukkan nama perangkat baru:", "Tambah Perangkat", JOptionPane.PLAIN_MESSAGE);
+        if (deviceName != null && !deviceName.trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Perangkat '" + deviceName.trim() + "' berhasil ditambahkan!");
         }
     }
 
-    // Memisahkan update text agar bisa dipanggil oleh slider secara real-time
-    private void updateStatusText(Room r, boolean isDapur) {
-        String info = "Ruangan : " + r.getName() + "\n\n" +
-                "Lampu   : " + (r.getLamp().isOn() ? "🟢 ON" : "🔴 OFF") + "\n";
-
-        if (!isDapur) {
-            info += "AC      : " + (r.getAC().isOn() ? "🟢 ON" : "🔴 OFF") + "\n" +
-                    "Suhu AC : " + r.getAC().getTemperature() + "°C\n" +
-                    "Pintu   : " + (r.getDoor().getState().equals("LOCKED") ? "🔒 LOCKED" : "🔓 UNLOCKED");
-        }
-
-        statusArea.setText(info);
-    }
-
-    private void updateDisplay() {
-        Room r = getSelectedRoom();
-        boolean isDapur = r.getName().equals("Dapur");
-
-        updateStatusText(r, isDapur);
-
-        // Mengatur ketersediaan tombol sesuai ruangan (Dapur tidak ada AC dan Pintu di
-        // simulasi ini)
-        acBtn.setVisible(!isDapur);
-        doorBtn.setVisible(!isDapur);
-        sliderPanel.setVisible(!isDapur);
-
-        // Set state slider secara diam-diam tanpa men-trigger ChangeListener
-        isUpdatingUI = true;
-        if (!isDapur) {
-            tempSlider.setValue(r.getAC().getTemperature());
-            // Jika AC mati, slider tidak bisa digeser (Disabled)
-            tempSlider.setEnabled(r.getAC().isOn());
-        }
-        isUpdatingUI = false;
-
-        // Update gambar panel CCTV
-        cctvPanel.setImage(r.getCurrentImage());
-    }
-
-    // Buat buttonnya jadi agak bulat, tidak kotak kaku
-    class ButtonBulat extends JButton {
-        public ButtonBulat(String text) {
-            super(text);
-            setContentAreaFilled(false);
-            setFocusPainted(false);
-            setBorderPainted(false);
-            setOpaque(false);
-        }
-
-        @Override
-        protected void paintComponent(Graphics g) {
-            Graphics2D g2 = (Graphics2D) g.create();
-
-            g2.setRenderingHint(
-                    RenderingHints.KEY_ANTIALIASING,
-                    RenderingHints.VALUE_ANTIALIAS_ON);
-            g2.setColor(new Color(0, 0, 0, 60));
-            g2.fillRoundRect(3, 3, getWidth() - 3, getHeight() - 3, 25, 25);
-
-            g2.setColor(getBackground());
-            g2.fillRoundRect(0, 0, getWidth() - 4, getHeight() - 4, 25, 25);
-            g2.dispose();
-            setContentAreaFilled(false);
-            super.paintComponent(g);
-        }
-
-        @Override
-        protected void paintBorder(Graphics g) {
-            Graphics2D g2 = (Graphics2D) g.create();
-            g2.setRenderingHint(
-                    RenderingHints.KEY_ANTIALIASING,
-                    RenderingHints.VALUE_ANTIALIAS_ON);
-
-            g2.setColor(getBackground().darker());
-            g2.drawRoundRect(0, 0, getWidth() - 5, getHeight() - 5, 25, 25);
-            g2.dispose();
-        }
+    // --- FUNGSI PEMBUAT HALAMAN PLACEHOLDER ---
+    private JPanel createPlaceholderPage(String text) {
+        JPanel panel = new JPanel(new GridBagLayout());
+        panel.setBackground(colorBackground);
+        
+        JLabel label = new JLabel("Berada di Halaman: " + text);
+        label.setFont(new Font("SansSerif", Font.BOLD, 24));
+        label.setForeground(textSecondary);
+        
+        panel.add(label);
+        return panel;
     }
 
     public static void main(String[] args) {
